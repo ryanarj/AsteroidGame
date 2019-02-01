@@ -20,14 +20,14 @@ var fall = 1;
 
 document.addEventListener("keydown", moveUp);
 
+function moveUp(){
+    shipY -= 20;
+}
+
 var asteroids = [];
 asteroids[0] = {
     x: cvs.width,
     y : 0
-}
-
-function moveUp(){
-    shipY -= 20;
 }
 
 function draw(){
@@ -35,10 +35,21 @@ function draw(){
 
     for(var i = 0; i < asteroids.length; i++){
         ctx.drawImage(asteroidNorth, asteroids[i].x, asteroids[i].y);
-        ctx.drawImage(asteroidNorth, asteroids[i].x, asteroids[i].y+constant);
+        ctx.drawImage(asteroidSouth, asteroids[i].x, asteroids[i].y+constant);
+        asteroids[i].x--;
+        if(asteroids[i].x == 0){
+            asteroids.push({
+                x: cvs.width,
+                y: Math.floor(math.random()*asteroidNorth.height) - asteroidNorth.height
+            });
+        }
+        if( shipX + ship.width >= asteroids[i].x && shipX <= asteroids[i].x + asteroidNorth.width
+            && (shipY >= asteroids[i].y +  asteroidNorth.height || 
+                shipY+asteroidNorth.height >= asteroids[i].y+constant)){
+                    location.reload();
+            }
+        ctx.drawImage(ship, shipX, shipY);
     }
-
-    ctx.drawImage(ship, 10, 150);
     shipX += fall;
     requestAnimationFrame(draw, shipX, shipY);
 }
